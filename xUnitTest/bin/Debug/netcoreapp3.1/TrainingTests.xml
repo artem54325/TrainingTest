@@ -1,0 +1,528 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TrainingTests</name>
+    </assembly>
+    <members>
+        <member name="M:TrainingTests.Controllers.ArticlesController.GetAll">
+            <summary>
+             Get all articles
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Article
+             </remarks>
+             <returns>Get all Article</returns>
+             <response code="200">Returns list articles</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.Get(System.String)">
+            <summary>
+             Get an article
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                     id = "article-1"
+                 }
+            
+             </remarks>
+             <returns>Get an TodoArticle</returns>
+             <response code="200">Returns an article</response>
+             <response code="400">Bad request</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.ClickLike(System.String,System.String)">
+            <summary>
+             Click like
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                     id = "article-1",
+                     type = "comment," // comment/article
+                 }
+            
+             </remarks>
+             <returns>Get TodoBoolean</returns>
+             <response code="200">Return a comment or article, it depends on the type</response>
+             <response code="400">Bad request</response>
+             <response code="404">If doesn't had article</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.AddComment(System.String,System.String)">
+            <summary>
+             Add comment to article
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                     text = "example-1",
+                     idArticle = "article-1,"
+                 }
+            
+             </remarks>
+             <returns>Get TodoComment</returns>
+             <response code="200">Returns a comment</response>
+             <response code="400">Bad request</response>
+             <response code="404">If doesn't had article</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.DeleteComment(System.String)">
+            <summary>
+             Remove a Comment
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                     id = "comment-1",
+                 }
+            
+             </remarks>
+             <returns>Get TodoComment</returns>
+             <response code="200">Returns a article</response>
+             <response code="400">Bad request</response>
+             <response code="404">If doesn't had article</response>  
+             <response code="403">Нету прав на удаление</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.AddArticle(System.String,System.String)">
+            <summary>
+             Add article
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                     title = "example-1",
+                     text = "comment," // comment/article
+                 }
+            
+             </remarks>
+             <returns>Get TodoArticle</returns>
+             <response code="200">Returns a article</response>
+             <response code="400">Bad request</response>
+             <response code="404">If doesn't had article</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.ArticlesController.UpdateArticle(System.String,System.String,System.String)">
+            <summary>
+             Update Article
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Todo
+                 {
+                 id = "article-1",
+                 title = "comment,"
+                 text = "comment,"
+                 }
+            
+             </remarks>
+             <returns>Updated TodoArticle</returns>
+             <response code="200">Returns a article</response>
+             <response code="400">Bad request</response>
+             <response code="404">If doesn't had article</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.SaveAllThemes(System.Collections.Generic.IEnumerable{TrainingTests.Models.Thema})">
+            <summary>
+             Saving all themes
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /SaveThema
+                 [
+                 
+                 ]
+             </remarks>
+             <returns>Save all themes</returns>
+             <response code="200">Get Themes</response>
+             <response code="400">Bad object for save</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.GetAllThemes">
+            <summary>
+             Get all Tests
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Result
+             </remarks>
+             <returns>Get all Themes</returns>
+             <response code="200">Returns list articles</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.GetFullTest">
+            <summary>
+             Get user Tests 
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /GetTest
+             </remarks>
+             <returns>Get all Tests</returns>
+             <response code="200">Returns list tests</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.GetAllTest">
+            <summary>
+             Get all tests
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /GetAllTest
+             </remarks>
+             <returns>Get all Article</returns>
+             <response code="200">Returns list articles</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.SaveAllTests(System.Collections.Generic.IEnumerable{TrainingTests.Models.Test})">
+            <summary>
+             Saving all tests
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /SaveAllTests
+                 {
+                 
+                 }
+             </remarks>
+             <returns>Save all tests</returns>
+             <response code="200">Get tests</response>
+             <response code="400">Bad object for save</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.GetQuestion(System.String)">
+            <summary>
+             Get question
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /GetQuestion
+             </remarks>
+             <returns>Get Question</returns>
+             <response code="200">Returns qustion</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.RemoveQuestion(System.String)">
+            <summary>
+             Remove a qustion
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /RemoveQuestion
+                 {
+                     idQustion = "id-qustion"
+                 }
+             </remarks>
+             <returns>Return Qustion after remove</returns>
+             <response code="200">Return Qustion after remove</response>
+             <response code="404">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.CreateTestController.RemoveTest(System.String)">
+            <summary>
+             Remove a test
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 Post /RemoveTest
+                 {
+                     idTest = "test-1"
+                 }
+             </remarks>
+             <returns>Return test after remove</returns>
+             <response code="200">Return test after remove</response>
+             <response code="404">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.Excel(System.String)">
+            <summary>
+             Download excel file with all table
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Excel
+             </remarks>
+             <returns>Excel file</returns>
+             <response code="200">Excel file</response>
+             <response code="400">Bad request</response>   
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.post(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+             Upload docs file
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /UploadFile
+                 {
+                     file = "file"
+                 }
+             </remarks>
+             <returns>Upload docs file</returns>
+             <response code="200">Excel file</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.SendEmail(System.String,System.String)">
+            <summary>
+             Send email to user
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /SendEmail
+                 {
+                     text = "file",
+                     email = "89126527199@yandex.ru"
+                 }
+             </remarks>
+             <returns>Send email to user</returns>
+             <response code="200">Excel file</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.AddMeeting(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+             Add user for meeting
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /AddMeeting
+                 {
+                     email = "89126527199@yandex.ru"
+                     text = "file",
+                     phone = "81231321232312",
+                     fullname = "FUll name",
+                     regim = "speaker",
+                     articleTitle = "title",
+                     reportTitle = "report",
+                     perfomance = "perfomance",
+                     placeWork = "Universoty",
+                     positionWork = "Boss",
+                     group = "MD-15-1",
+                 }
+             </remarks>
+             <returns>Add user for meeting</returns>
+             <response code="200">Saved new user</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.GetAll">
+            <summary>
+             Get all users for meeting
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /GetAll
+             </remarks>
+             <returns>Get all users</returns>
+             <response code="200">Get 3 lists object with users</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.Get(System.String,System.String)">
+            <summary>
+             Get only 1 user
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Get
+                 {
+                     mode = "meetups" //meetups|profiles|speakers
+                     id = "meeting-1"
+                 }
+             </remarks>
+             <returns>Send email to user</returns>
+             <response code="200">Excel file</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.Authorization(System.String)">
+            <summary>
+             User confirmation by email
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Get
+                 {
+                     mode = "meetups" //meetups|profiles|speakers
+                     id = "meeting-1"
+                 }
+             </remarks>
+             <returns>Redirect main page</returns>
+             <response code="200">User confirmation by email</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.MeetingController.CreateToken(System.String)">
+            <summary>
+             Creating a token for confirmation via email
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /CreateToken
+                 {
+                     email = "email@email.ru"
+                 }
+             </remarks>
+             <returns>Sending message to email</returns>
+             <response code="200">Sended message to email</response>
+             <response code="400">Bad request</response> 
+        </member>
+        <member name="M:TrainingTests.Controllers.TestingTestController.Password(System.String)">
+            <summary>
+             Checking password for question
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /Password
+             </remarks>
+             <returns>Get all Article</returns>
+             <response code="200">Returns list questions</response>
+             <response code="400">Not found test</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.TestingTestController.GetTest(System.String)">
+            <summary>
+             Get questions from test
+            </summary>
+             <remarks>
+             Sample request:
+                 GET /GetTest
+             </remarks>
+             <returns>Get all questions</returns>
+             <response code="200">Returns list questions</response>
+             <response code="400">Not found test</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.TestingTestController.GetAllTest">
+            <summary>
+             Get all tests for users
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 GET /GetAllTest
+             </remarks>
+             <returns>Get all Article</returns>
+             <response code="200">Returns list articles</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.TestingTestController.UserMy(System.String,System.String,System.String)">
+            <summary>
+             Get questions of test
+            </summary>
+             <remarks>
+             Sample request:
+                 POST /WriteUser
+             </remarks>
+             <returns>Get test</returns>
+             <response code="200">Returns list articles</response>
+             <response code="400">If doesn't test Id or doesn't it test</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.TestingTestController.Result(System.Collections.Generic.ICollection{TrainingTests.Models.Question})">
+            <summary>
+             Checking Result of test
+            </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /Result
+             </remarks>
+             <returns>Checking result</returns>
+             <response code="200">Returns list articles</response>
+             <response code="404">If the item is null</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.UsersController.Authorization(System.String,System.String)">
+            <summary>
+             Authorization user
+            </summary>
+             <remarks>
+             Sample request:
+                 POST /Authorization
+             </remarks>
+             <returns>todoUser</returns>
+             <response code="200">Return user</response>
+             <response code="400">Bad username or password</response>  
+        </member>
+        <member name="M:TrainingTests.Controllers.UsersController.UserMy">
+            <summary>
+             Get user
+            </summary>
+             <remarks>
+             Sample request:
+                 POST /User
+             </remarks>
+             <returns>Get user</returns>
+             <response code="200">Return user</response>
+             <response code="400">If doesn't test Id or doesn't it test</response>
+        </member>
+        <member name="M:TrainingTests.Controllers.UsersController.Update(TrainingTests.Models.User)">
+            <summary>
+             Updating user
+            </summary>
+             <remarks>
+             Sample request:
+                 POST /Update
+             </remarks>
+             <returns>Update user</returns>
+             <response code="200">User</response>
+             <response code="400">Bad a request</response>
+        </member>
+        <member name="P:TrainingTests.Models.EventProfileUser.Registration">
+            <summary>  
+            Date registration user.  
+            </summary>  
+        </member>
+        <member name="P:TrainingTests.Models.EventProfileUser.LastActions">
+            <summary>  
+            Last user actions.  
+            </summary>  
+        </member>
+        <member name="P:TrainingTests.Models.Meetup.PlaceWork">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Meetup.PositionWork">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Meetup.Group">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Speaker.EventProfileUserId">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Speaker.ReportTitle">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Speaker.ArticleTitle">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+        <member name="P:TrainingTests.Models.Speaker.Performance">
+            <summary>  
+             is Activity user.  
+            </summary> 
+        </member>
+    </members>
+</doc>

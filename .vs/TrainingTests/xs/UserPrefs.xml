@@ -1,0 +1,44 @@
+﻿<Properties StartupConfiguration="{83DEC738-AA71-4A10-BB90-2AFFBEEA95EF}|Default">
+  <MonoDevelop.Ide.ItemProperties.TrainingTests PreferredExecutionTarget="/Applications/Yandex.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="xUnitTest/ControllersTest/ArticlesControllerTests.cs">
+    <Files>
+      <File FileName="xUnitTest/ControllersTest/ArticlesControllerTests.cs" Line="38" Column="35" />
+      <File FileName="TrainingTests/Repositories/MySqlContext.cs" />
+      <File FileName="TrainingTests/Repositories/PutData.cs" Line="590" Column="13" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="TrainingTests" expanded="True">
+            <Node name="TrainingTests" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="Helpers" expanded="True" />
+              <Node name="Models" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Repositories" expanded="True" />
+            </Node>
+            <Node name="xUnitTest" expanded="True">
+              <Node name="ControllersTest" expanded="True">
+                <Node name="ArticlesControllerTests.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.UnitTesting.TestPad">
+        <State name="__root__">
+          <Node name="TrainingTests" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Applications/TrainingTest-create/TrainingTests/Controllers/WeatherForecastController.cs" relfile="TrainingTests/Controllers/WeatherForecastController.cs" line="29" column="1" />
+      <Breakpoint file="/Applications/TrainingTest-create/xUnitTest/ControllersTest/ArticlesControllerTests.cs" relfile="xUnitTest/ControllersTest/ArticlesControllerTests.cs" line="42" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
