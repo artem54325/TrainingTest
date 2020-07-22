@@ -429,4 +429,6 @@ C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnit
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.genruntimeconfig.cache
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\RestSharp.dll
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\NSubstitute.dll
+C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.TestHost.dll
+C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\System.IO.Pipelines.dll
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.csproj.CoreCompileInputs.cache

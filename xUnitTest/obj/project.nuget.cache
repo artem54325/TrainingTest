@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kPojAiXdcqKnUjQ0NLhN/o6LGDmf07L9UTae+7cghoawMJ4rFfMZCrF+7/0cAEqyGdOj9MKlOcRHpGlJNZlYkA==",
+  "dgSpecHash": "9a36WaQ0LfsTDgLTYLCKHFF3qQ6JmCEQuuLo66rdTpa68C+gRhMismTrQDdnxVxphFBoByipuGAMe1PWxOBJVw==",
   "success": true,
   "projectFilePath": "C:\\Users\\chilo\\source\\repos\\TrainingTest\\xUnitTest\\xUnitTest.csproj",
   "expectedPackageFiles": [
@@ -17,6 +17,7 @@
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.6\\microsoft.aspnetcore.authentication.jwtbearer.3.1.6.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.6\\microsoft.aspnetcore.jsonpatch.3.1.6.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.6\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.6.nupkg.sha512",
+    "C:\\Users\\chilo\\.nuget\\packages\\microsoft.aspnetcore.testhost\\3.1.6\\microsoft.aspnetcore.testhost.3.1.6.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.bcl.hashcode\\1.1.0\\microsoft.bcl.hashcode.1.1.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\microsoft.codecoverage\\16.6.1\\microsoft.codecoverage.16.6.1.nupkg.sha512",
@@ -116,6 +117,7 @@
     "C:\\Users\\chilo\\.nuget\\packages\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\system.io.packaging\\4.0.0\\system.io.packaging.4.0.0.nupkg.sha512",
+    "C:\\Users\\chilo\\.nuget\\packages\\system.io.pipelines\\4.7.1\\system.io.pipelines.4.7.1.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\system.linq.expressions\\4.3.0\\system.linq.expressions.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\system.net.http\\4.3.0\\system.net.http.4.3.0.nupkg.sha512",

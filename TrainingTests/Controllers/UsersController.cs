@@ -6,12 +6,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using TrainingTests.Helpers;
 using TrainingTests.Models;
 using TrainingTests.Repositories;
+using TrainingTests.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -71,7 +73,7 @@ namespace TrainingTests.Controllers
         /// <response code="403">Bad username or password</response>  
         [AllowAnonymous]
         [HttpPost("Authorization")]
-        public IActionResult Authorization(string username = "SuperUser", string password = "SuperUser")
+        public async Task<ActionResult<UserView>> Authorization(string username = "SuperUser", string password = "SuperUser")
         {
             var identity = GetIdentity(username, password);
             if (identity == null)
@@ -90,10 +92,10 @@ namespace TrainingTests.Controllers
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
+            var response = new UserView
             {
-                access_token = encodedJwt,
-                username = identity.Name
+                AccessToken = encodedJwt,
+                Username = identity.Name
             };
 
             return Ok(response);
@@ -109,12 +111,13 @@ namespace TrainingTests.Controllers
         /// <returns>Get user</returns>
         /// <response code="200">Return user</response>
         /// <response code="403">If doesn't test Id or doesn't it test</response>
-        //[Authorize]
-        [HttpPost("User")]
-        public ActionResult<User> UserMy()
+        [Authorize]
+        [HttpGet("User")]
+        public async Task<ActionResult<User>> UserMy()
         {
-            string usermane = "test";
-            User user = null;// _context.GetUser(usermane);
+            string usermane = User.Identity.Name;
+            var user = GetUser(usermane);
+
             if (user == null)
             {
                 return StatusCode(403);
@@ -133,15 +136,16 @@ namespace TrainingTests.Controllers
         /// <returns>Update user</returns>
         /// <response code="200">User</response>
         /// <response code="400">Bad a request</response>
+        /// <response code="403">Don't auth</response>
         [Authorize]
         [HttpPost("Update")]
         public ActionResult<User> Update(User user)
         {
-            string usermane = "test";
-            //user = _context.UserUpdate(user);
+            string usermane = User.Identity.Name;
+            user = GetUser(usermane);
             if (user.Username.Equals(usermane))
             {
-                return StatusCode(400);
+                return StatusCode(403);
             }
             if (user == null)
             {
@@ -152,8 +156,8 @@ namespace TrainingTests.Controllers
         }
         private ClaimsIdentity GetIdentity(string username, string password)
         {
-            User user = _context.TeacherUsers.FirstOrDefault(a=>a.Username.Equals(username) && a.Password.Equals(password));
-            if(user == null)
+            User user = _context.TeacherUsers.FirstOrDefault(a => a.Username.Equals(username) && a.Password.Equals(password));
+            if (user == null)
             {
                 user = _context.StudentUsers.FirstOrDefault(a => a.Username.Equals(username) && a.Password.Equals(password));
             }
@@ -175,6 +179,26 @@ namespace TrainingTests.Controllers
             }
 
             // если пользователя не найдено
+            return null;
+        }
+
+        private User GetUser(string username)
+        {
+            var userSt = _context.StudentUsers.FirstOrDefault(a => a.Username.Equals(username));
+            if (userSt != null)
+            {
+                return userSt;
+            }
+            var userTeach = _context.TeacherUsers.FirstOrDefault(a => a.Username.Equals(username));
+            if (userTeach != null)
+            {
+                return userTeach;
+            }
+            var userSuper = _context.SuperUsers.FirstOrDefault(a => a.Username.Equals(username));
+            if (userSuper != null)
+            {
+                return userSuper;
+            }
             return null;
         }
     }

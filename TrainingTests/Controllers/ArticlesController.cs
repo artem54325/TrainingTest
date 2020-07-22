@@ -368,6 +368,11 @@ namespace TrainingTests.Controllers
             {
                 return userTeach;
             }
+            var userSuper = _context.SuperUsers.FirstOrDefault(a => a.Username.Equals(username));
+            if (userTeach != null)
+            {
+                return userSuper;
+            }
             return null;
         }
     }

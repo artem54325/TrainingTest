@@ -478,6 +478,7 @@
              <returns>Update user</returns>
              <response code="200">User</response>
              <response code="400">Bad a request</response>
+             <response code="403">Don't auth</response>
         </member>
         <member name="P:TrainingTests.Models.EventProfileUser.Registration">
             <summary>  

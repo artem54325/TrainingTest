@@ -157,7 +157,7 @@ namespace TrainingTests.Repositories
         {
             super = new SuperUser()
             {
-                //Id = "SuperUser",
+                Id = "SuperUser",
                 Password = "SuperUser",
                 Username = "SuperUser",
                 Firstname = "SuperUser",

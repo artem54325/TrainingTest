@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Text.Json;
+using TrainingTests;
 using TrainingTests.Controllers;
 using TrainingTests.Models;
 using TrainingTests.Repositories;
@@ -16,79 +20,75 @@ namespace xUnitTest.ControllersTest
         private readonly MySqlContext mySql;
         private readonly UsersController controller;
 
+        private readonly TestServer _server;
+        private readonly HttpClient _client;
+
         public UserControllerTests()
         {
-            if (false)
-            {
-                PutData putData = new PutData();
-
-                var listQuestions = new List<Question>();//.AsQueryable();
-                listQuestions.AddRange(putData.questions1);
-                listQuestions.AddRange(putData.questions2);
-
-                var dbThema = new List<Thema>(putData.themes).AsQueryable();
-                var dbTestThemes = new List<TestThema>(putData.TestThemas).AsQueryable();
-                var dbQuestions = listQuestions.AsQueryable();
-                var dbQuestionAnswer = new List<QuestionAnswer>(putData.questionAnswers).AsQueryable();
-                var dbTestStudent = new List<TestStudent>(putData.testStudents).AsQueryable();
-
-                var mockSetThema = new Mock<DbSet<Thema>>();
-                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.Provider).Returns(dbThema.Provider);
-                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.Expression).Returns(dbThema.Expression);
-                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.ElementType).Returns(dbThema.ElementType);
-                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.GetEnumerator()).Returns(dbThema.GetEnumerator());
-
-                var mockSetTestThema = new Mock<DbSet<TestThema>>();
-                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.Provider).Returns(dbTestThemes.Provider);
-                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.Expression).Returns(dbTestThemes.Expression);
-                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.ElementType).Returns(dbTestThemes.ElementType);
-                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.GetEnumerator()).Returns(dbTestThemes.GetEnumerator());
-
-                var mockSetQuestion = new Mock<DbSet<Question>>();
-                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.Provider).Returns(dbQuestions.Provider);
-                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.Expression).Returns(dbQuestions.Expression);
-                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.ElementType).Returns(dbQuestions.ElementType);
-                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.GetEnumerator()).Returns(dbQuestions.GetEnumerator());
-
-                var mockSetQuestionAnswer = new Mock<DbSet<QuestionAnswer>>();
-                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.Provider).Returns(dbQuestionAnswer.Provider);
-                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.Expression).Returns(dbQuestionAnswer.Expression);
-                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.ElementType).Returns(dbQuestionAnswer.ElementType);
-                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.GetEnumerator()).Returns(dbQuestionAnswer.GetEnumerator());
-
-                var mockSetTestStudent = new Mock<DbSet<TestStudent>>();
-                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.Provider).Returns(dbTestStudent.Provider);
-                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.Expression).Returns(dbTestStudent.Expression);
-                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.ElementType).Returns(dbTestStudent.ElementType);
-                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.GetEnumerator()).Returns(dbTestStudent.GetEnumerator());
-
-                var mqContext = new Mock<MySqlContext>();
-
-                mqContext.Setup(a => a.Questions).Returns(mockSetQuestion.Object);
-                mqContext.Setup(a => a.Themes).Returns(mockSetThema.Object);
-                mqContext.Setup(a => a.TestThemes).Returns(mockSetTestThema.Object);
-                mqContext.Setup(a => a.QuestionAnswers).Returns(mockSetQuestionAnswer.Object);
-                mqContext.Setup(a => a.TestStudents).Returns(mockSetTestStudent.Object);
-
-                mySql = mqContext.Object;
-            }
-            else
-            {
-                var optionsBuilder = new DbContextOptionsBuilder<MySqlContext>();
-                var options = optionsBuilder
-                    .UseNpgsql(xUnitTest.Helpers.Constants.DATABASE)
-                    .Options;
-                mySql = new MySqlContext(options);
-                mySql.Database.EnsureDeleted();
-                mySql.Database.EnsureCreated();
-            }
-            controller = new UsersController(mySql);
+            _server = new TestServer(new WebHostBuilder()
+                .UseStartup<Startup>());
+            _client = _server.CreateClient();
         }
 
         [Fact]
-        public void AuthorizationTest()
+        public async void AuthorizationTest()
         {
+            string otherName = "qwe";
+            JObject jObject = new JObject();
+            jObject.Add("username", "SuperUser");
+            jObject.Add("password", "SuperUser");
+            var response = await _client.PostAsJsonAsync("/api/Users/Authorization", jObject);
 
+            var responseString = await response.Content.ReadAsStringAsync();
+            var responseJson = JObject.Parse(responseString);
+            _client.DefaultRequestHeaders.Add("authorization", "Bearer "+responseJson["accessToken"]);
+
+            var userResponse = await _client.GetAsync("/api/Users/User");
+
+            responseString = await userResponse.Content.ReadAsStringAsync();
+            User userObj = JsonSerializer.Deserialize<User>(responseString);
+            userObj.Id = "qwe";
+            responseJson = JObject.Parse(responseString);
+            /**
+             * 
+             * +responseJson	{{
+                  "role": 0,
+                  "id": "SuperUser",
+                  "username": "SuperUser",
+                  "email": "Email",
+                  "firstname": "SuperUser",
+                  "secondname": "SuperUser",
+                  "dateBirth": "0001-01-01T00:00:00",
+                  "dateRegistration": "2020-07-22T20:21:54.1044671+05:00"
+                }}	Newtonsoft.Json.Linq.JObject
+             */
+            Assert.NotNull(responseJson["role"]);
+            Assert.NotNull(responseJson["firstname"]);
+            Assert.NotNull(responseJson["secondname"]);
+            userObj.Email = "qwe";
+            responseJson["role"] = 1;
+            responseJson["firstname"] = otherName;
+            responseJson["secondname"] = otherName;
+            // Отправить через Form
+
+            var userUserResponse = await _client.PostAsJsonAsync("/api/Users/Update", responseJson);
+            var responseUserString = await userUserResponse.Content.ReadAsStringAsync();
+            var responseUserJson = JObject.Parse(responseUserString);
+
+            Assert.NotEqual(responseJson["role"], responseUserJson["role"]);
+            Assert.Equal(responseJson["firstname"], responseUserJson["firstname"]);
+            Assert.Equal(responseJson["secondname"], responseUserJson["secondname"]);
+            Assert.Equal(responseJson["username"], responseUserJson["username"]);
+            Assert.Equal(responseJson["secondname"], responseUserJson["secondname"]);
+
+            // User.Identity.Name
+            //controller.User.Identity
+            // UserMy            
+            //var resultUser = await controller.UserMy();
+
+            //var viewResultu = Assert.IsType<ActionResult<UserView>>(resultUser);
+            //var userVu = Assert.IsType<OkObjectResult>(userVu.Result);
+            //var userResu = Assert.IsAssignableFrom<UserView>(userResu.Value);
         }
 
         [Fact]

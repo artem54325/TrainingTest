@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ namespace TrainingTests.Models
 {
     public class SuperUser : User
     {
-        public override Roles Role => Roles.SuperUser;
+        public Roles Role => Roles.SuperUser;
     }
     //https://metanit.com/sharp/mvc5/25.1.php
     //https://www.robinwieruch.de/react-list-component
@@ -17,45 +18,45 @@ namespace TrainingTests.Models
 
     public class TeacherUser : User
     {
-        public override Roles Role => Roles.Teacher;
-        [JsonIgnore]
+        public Roles Role => Roles.Teacher;
+
         public string Discipline { get; set; }
-        [JsonIgnore]
+
         public string Department { get; set; }
         [JsonIgnore]
         public List<Test> Tests { get; set; }
     }
     public class StudentUser : User
     {
-        public override Roles Role => Roles.Student;
-        [JsonIgnore]
+        public Roles Role => Roles.Student;
+
         public string Group { get; set; }
-        [JsonIgnore]
+
         public string Department { get; set; }
         [JsonIgnore]
         public List<TestStudent> TestStudents { get; set; }
     }
 
-    public abstract class User
+    public class User
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        [Required, JsonIgnore]
+        [Required]
         public string Username { get; set; }
-        [Required, DataType(DataType.EmailAddress), JsonIgnore]
+        [Required, DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [Required, DataType(DataType.Password), JsonIgnore]
         public string Password { get; set; }
-        [JsonIgnore]
-        public abstract Roles Role { get; }
+
+        [DefaultValue(0)]
+        public Roles Role { get; }
 
         public string Firstname { get; set; }
         public string Secondname { get; set; }
-        [JsonIgnore]
-        public string Token { get; set; }
+
+        public DateTime DateBirth { get; set; }
 
         //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
-        [JsonIgnore]
         public DateTime DateRegistration { get; set; }
     }
     public enum Roles
