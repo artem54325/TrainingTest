@@ -453,7 +453,7 @@
              </remarks>
              <returns>todoUser</returns>
              <response code="200">Return user</response>
-             <response code="400">Bad username or password</response>  
+             <response code="403">Bad username or password</response>  
         </member>
         <member name="M:TrainingTests.Controllers.UsersController.UserMy">
             <summary>
@@ -465,7 +465,7 @@
              </remarks>
              <returns>Get user</returns>
              <response code="200">Return user</response>
-             <response code="400">If doesn't test Id or doesn't it test</response>
+             <response code="403">If doesn't test Id or doesn't it test</response>
         </member>
         <member name="M:TrainingTests.Controllers.UsersController.Update(TrainingTests.Models.User)">
             <summary>

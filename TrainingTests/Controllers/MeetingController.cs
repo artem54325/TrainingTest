@@ -22,10 +22,38 @@ namespace TrainingTests.Controllers
         private readonly ILogger<MeetingController> _logger;
         private readonly MySqlContext _context;
 
-        public MeetingController(ILogger<MeetingController> logger)
+        public MeetingController(MySqlContext mySql)
         {
-            _logger = logger;
-            //_context = new Repository.LocalRepository();
+            _context = mySql;
+            if (_context.Questions.Count() == 0)
+            {
+                PutData data = new PutData();
+
+                Console.WriteLine($"Add database Article = {data.articles.Count}");
+                _context.Articles.AddRange(data.articles);
+                _context.Comments.AddRange(data.comments);
+
+                _context.SuperUsers.Add(data.super);
+                _context.TestThemes.AddRange(data.TestThemas);
+                _context.TeacherUsers.AddRange(data.teacher);
+                _context.StudentUsers.AddRange(data.studentUser);
+                _context.TestStudents.AddRange(data.testStudents);
+                _context.QuestionAnswers.AddRange(data.questionAnswers);
+                _context.Tests.AddRange(data.tests);
+
+                _context.Themes.AddRange(data.themes);
+                _context.Questions.AddRange(data.questions1);
+                _context.Questions.AddRange(data.questions2);
+                _context.Questions.AddRange(data.questions3);
+                _context.Marks.AddRange(data.Marks1);
+                _context.Marks.AddRange(data.Marks2);
+
+                _context.EventProfileUsers.AddRange(data.EventProfileUsers);
+                _context.Meetups.AddRange(data.Meetups);
+                _context.Speakers.AddRange(data.Speakers);
+
+                _context.SaveChanges();
+            }
         }
 
         ///<summary>

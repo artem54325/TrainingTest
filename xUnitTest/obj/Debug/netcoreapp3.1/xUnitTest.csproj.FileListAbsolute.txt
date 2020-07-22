@@ -425,6 +425,8 @@ C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\Train
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.csprojAssemblyReference.cache
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.AssemblyInfoInputs.cache
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.AssemblyInfo.cs
-C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.csproj.CoreCompileInputs.cache
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.csproj.CopyComplete
 C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.genruntimeconfig.cache
+C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\RestSharp.dll
+C:\Users\chilo\source\repos\TrainingTest\xUnitTest\bin\Debug\netcoreapp3.1\NSubstitute.dll
+C:\Users\chilo\source\repos\TrainingTest\xUnitTest\obj\Debug\netcoreapp3.1\xUnitTest.csproj.CoreCompileInputs.cache

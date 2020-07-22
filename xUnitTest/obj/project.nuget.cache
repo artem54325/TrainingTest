@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "SqcSdIB4RyF4jEivHXP3zZ4RiRsrfNiO5STFp9kMxcvslQ1GKjs1Xuz2pjvjVP0rwrmSoGegXulQJ9obAerzvg==",
+  "dgSpecHash": "kPojAiXdcqKnUjQ0NLhN/o6LGDmf07L9UTae+7cghoawMJ4rFfMZCrF+7/0cAEqyGdOj9MKlOcRHpGlJNZlYkA==",
   "success": true,
   "projectFilePath": "C:\\Users\\chilo\\source\\repos\\TrainingTest\\xUnitTest\\xUnitTest.csproj",
   "expectedPackageFiles": [
@@ -58,7 +58,9 @@
     "C:\\Users\\chilo\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\npgsql\\4.1.3.1\\npgsql.4.1.3.1.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\3.1.4\\npgsql.entityframeworkcore.postgresql.3.1.4.nupkg.sha512",
+    "C:\\Users\\chilo\\.nuget\\packages\\nsubstitute\\4.2.2\\nsubstitute.4.2.2.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\nuget.frameworks\\5.0.0\\nuget.frameworks.5.0.0.nupkg.sha512",
+    "C:\\Users\\chilo\\.nuget\\packages\\restsharp\\106.11.4\\restsharp.106.11.4.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\chilo\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

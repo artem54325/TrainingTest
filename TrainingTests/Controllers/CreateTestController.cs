@@ -395,7 +395,8 @@ namespace TrainingTests.Controllers
             return Ok(test);
         }
 
-        public async Task<TeacherUser> GetTeacherUser(string username)
+
+        private async Task<TeacherUser> GetTeacherUser(string username)
         {
             return await _context.TeacherUsers.FirstOrDefaultAsync(a => a.Username.Equals(username));
         }

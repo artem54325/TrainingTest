@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using TrainingTests.Helpers;
 using TrainingTests.Models;
 using TrainingTests.Repositories;
 
@@ -16,16 +20,42 @@ namespace TrainingTests.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        private readonly ILogger<UsersController> _logger;
         //private readonly IUserService _userService;
         private readonly MySqlContext _context;
 
 
-        public UsersController(ILogger<UsersController> logger)
+        public UsersController(MySqlContext mySql)
         {
-            _logger = logger;
-            //_userService = userService;
-            _context = new MySqlContext(null);
+            _context = mySql;
+            if (_context.Questions.Count() == 0)
+            {
+                PutData data = new PutData();
+
+                Console.WriteLine($"Add database Article = {data.articles.Count}");
+                _context.Articles.AddRange(data.articles);
+                _context.Comments.AddRange(data.comments);
+
+                _context.SuperUsers.Add(data.super);
+                _context.TestThemes.AddRange(data.TestThemas);
+                _context.TeacherUsers.AddRange(data.teacher);
+                _context.StudentUsers.AddRange(data.studentUser);
+                _context.TestStudents.AddRange(data.testStudents);
+                _context.QuestionAnswers.AddRange(data.questionAnswers);
+                _context.Tests.AddRange(data.tests);
+
+                _context.Themes.AddRange(data.themes);
+                _context.Questions.AddRange(data.questions1);
+                _context.Questions.AddRange(data.questions2);
+                _context.Questions.AddRange(data.questions3);
+                _context.Marks.AddRange(data.Marks1);
+                _context.Marks.AddRange(data.Marks2);
+
+                _context.EventProfileUsers.AddRange(data.EventProfileUsers);
+                _context.Meetups.AddRange(data.Meetups);
+                _context.Speakers.AddRange(data.Speakers);
+
+                _context.SaveChanges();
+            }
         }
 
 
@@ -38,18 +68,35 @@ namespace TrainingTests.Controllers
         /// </remarks>
         /// <returns>todoUser</returns>
         /// <response code="200">Return user</response>
-        /// <response code="400">Bad username or password</response>  
+        /// <response code="403">Bad username or password</response>  
         [AllowAnonymous]
         [HttpPost("Authorization")]
-        public IActionResult Authorization(string username, string password)
+        public IActionResult Authorization(string username = "SuperUser", string password = "SuperUser")
         {
-            //var user = _context.Authenticate(username, password);
+            var identity = GetIdentity(username, password);
+            if (identity == null)
+            {
+                return StatusCode(403);// BadRequest(new { errorText = "Invalid username or password." });
+            }
 
-            //if (user == null)
-            //    return BadRequest(new { message = "Username or password is incorrect" });
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            //return Ok(user);
-            return null;
+            var response = new
+            {
+                access_token = encodedJwt,
+                username = identity.Name
+            };
+
+            return Ok(response);
         }
 
         ///<summary>
@@ -61,7 +108,7 @@ namespace TrainingTests.Controllers
         /// </remarks>
         /// <returns>Get user</returns>
         /// <response code="200">Return user</response>
-        /// <response code="400">If doesn't test Id or doesn't it test</response>
+        /// <response code="403">If doesn't test Id or doesn't it test</response>
         //[Authorize]
         [HttpPost("User")]
         public ActionResult<User> UserMy()
@@ -70,26 +117,11 @@ namespace TrainingTests.Controllers
             User user = null;// _context.GetUser(usermane);
             if (user == null)
             {
-                return StatusCode(400);
+                return StatusCode(403);
             }
 
             return Ok(user);
         }
-
-        //[Authorize]
-        //[HttpPost("Description")]
-        //public JsonResult Description(string username)
-        //{
-        //    JObject user = new JObject();
-
-        //    user.Add("name", "username");
-        //    user.Add("url", "https://i.pinimg.com/474x/76/6c/f7/766cf770ea8dd3529bd8e0c41d6784be--lilo-and-stitch-cute-things.jpg");
-        //    user.Add("type", "student");
-        //    user.Add("type", "student");
-        //    user.Add("type", "student");
-
-        //    return new JsonResult(user);
-        //}
 
         ///<summary>
         /// Updating user
@@ -101,7 +133,7 @@ namespace TrainingTests.Controllers
         /// <returns>Update user</returns>
         /// <response code="200">User</response>
         /// <response code="400">Bad a request</response>
-        //[Authorize]
+        [Authorize]
         [HttpPost("Update")]
         public ActionResult<User> Update(User user)
         {
@@ -117,6 +149,33 @@ namespace TrainingTests.Controllers
             }
 
             return Ok(user);
+        }
+        private ClaimsIdentity GetIdentity(string username, string password)
+        {
+            User user = _context.TeacherUsers.FirstOrDefault(a=>a.Username.Equals(username) && a.Password.Equals(password));
+            if(user == null)
+            {
+                user = _context.StudentUsers.FirstOrDefault(a => a.Username.Equals(username) && a.Password.Equals(password));
+            }
+            if (user == null)
+            {
+                user = _context.SuperUsers.FirstOrDefault(a => a.Username.Equals(username) && a.Password.Equals(password));
+            }
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Username),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString())
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            // если пользователя не найдено
+            return null;
         }
     }
 }
