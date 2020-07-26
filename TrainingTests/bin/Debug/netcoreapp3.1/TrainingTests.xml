@@ -480,6 +480,18 @@
              <response code="400">Bad a request</response>
              <response code="403">Don't auth</response>
         </member>
+        <member name="M:TrainingTests.Controllers.UsersController.Registration(TrainingTests.ViewModels.RegistrationView)">
+            <summary>
+             Registration new user
+            </summary>
+             <remarks>
+             Sample request:
+                 POST /User
+             </remarks>
+             <returns>Get user</returns>
+             <response code="200">Return new user</response>
+             <response code="403">if there is such a username</response>
+        </member>
         <member name="P:TrainingTests.Models.EventProfileUser.Registration">
             <summary>  
             Date registration user.  

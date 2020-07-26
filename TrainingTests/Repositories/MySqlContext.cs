@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TrainingTests.Models;
 
@@ -10,6 +11,35 @@ namespace TrainingTests.Repositories
         {
             Database.EnsureDeleted();
             Database.EnsureCreated();
+
+            if (Articles.Count() == 0)
+            {
+                PutData data = new PutData();
+                
+                Articles.AddRange(data.articles);
+                Comments.AddRange(data.comments);
+
+                SuperUsers.Add(data.super);
+                TeacherUsers.AddRange(data.teacher);
+                StudentUsers.AddRange(data.studentUser);
+                TestStudents.AddRange(data.testStudents);
+                QuestionAnswers.AddRange(data.questionAnswers);
+                Tests.AddRange(data.tests);
+
+                Themes.AddRange(data.themes);
+                TestThemes.AddRange(data.TestThemas);
+                Questions.AddRange(data.questions1);
+                Questions.AddRange(data.questions2);
+                Questions.AddRange(data.questions3);
+                Marks.AddRange(data.Marks1);
+                Marks.AddRange(data.Marks2);
+
+                EventProfileUsers.AddRange(data.EventProfileUsers);
+                Meetups.AddRange(data.Meetups);
+                Speakers.AddRange(data.Speakers);
+
+                SaveChanges();
+            }
         }
 
         //https://metanit.com/sharp/mvc5/5.12.php

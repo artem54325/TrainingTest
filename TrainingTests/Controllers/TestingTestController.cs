@@ -24,35 +24,7 @@ namespace TrainingTests.Controllers
         public TestingTestController(MySqlContext mySql)//MySqlContext mySql
         {
             _context = mySql;
-            if (_context.Questions.Count() == 0)
-            {
-                PutData data = new PutData();
-
-                Console.WriteLine($"Add database Article = {data.articles.Count}");
-                _context.Articles.AddRange(data.articles);
-                _context.Comments.AddRange(data.comments);
-
-                _context.SuperUsers.Add(data.super);
-                _context.TestThemes.AddRange(data.TestThemas);
-                _context.TeacherUsers.AddRange(data.teacher);
-                _context.StudentUsers.AddRange(data.studentUser);
-                _context.TestStudents.AddRange(data.testStudents);
-                _context.QuestionAnswers.AddRange(data.questionAnswers);
-                _context.Tests.AddRange(data.tests);
-
-                _context.Themes.AddRange(data.themes);
-                _context.Questions.AddRange(data.questions1);
-                _context.Questions.AddRange(data.questions2);
-                _context.Questions.AddRange(data.questions3);
-                _context.Marks.AddRange(data.Marks1);
-                _context.Marks.AddRange(data.Marks2);
-
-                _context.EventProfileUsers.AddRange(data.EventProfileUsers);
-                _context.Meetups.AddRange(data.Meetups);
-                _context.Speakers.AddRange(data.Speakers);
-
-                _context.SaveChanges();
-            }
+            
         }
 
         ///<summary>
@@ -87,7 +59,8 @@ namespace TrainingTests.Controllers
             for (var i = 0; i < test.Themes.Count; i++)
             {
                 test.Themes[i].Thema = _context.Themes.FirstOrDefault(a => a.Id.Equals(test.Themes[i].ThemaId));
-                test.Themes[i].Thema.Questions = _context.Questions.Where(a => a.ThemaId.Equals(test.Themes[i].Thema.Id)).ToList();
+                test.Themes[i].Thema.Questions = _context.Questions
+                    .Where(a => a.ThemaId.Equals(test.Themes[i].Thema.Id)).ToList();
             }
 
             if (test == null)
@@ -114,21 +87,27 @@ namespace TrainingTests.Controllers
         /// <response code="200">Returns list questions</response>
         /// <response code="400">Not found test</response>  
         [HttpPost("GetTest")]
-        public async Task<ActionResult<List<Question>>> GetTest([FromForm] string id)
+        public async Task<ActionResult<List<Question>>> GetTest([FromBody] string id= "test-1")
         {
 
             // Check password and return questionnaire
-            Test test = _context.Tests.FirstOrDefault(a => a.Id.Equals(id));
-            test.Themes = _context.TestThemes.Where(a => a.TestId.Equals(test.Id)).ToList();
-            for (var i = 0; i < test.Themes.Count; i++)
+            if(id == null)
             {
-                test.Themes[i].Thema = _context.Themes.FirstOrDefault(a => a.Id.Equals(test.Themes[i].ThemaId));
-                test.Themes[i].Thema.Questions = _context.Questions.Where(a => a.ThemaId.Equals(test.Themes[i].Thema.Id)).ToList();
+                return StatusCode(400);
             }
+            Test test = _context.Tests.FirstOrDefault(a => a.Id.Equals(id));
 
             if (test == null)
             {
                 return StatusCode(400);
+            }
+
+            test.Themes = _context.TestThemes.Where(a => a.TestId.Equals(test.Id)).ToList();
+            for (var i = 0; i < test.Themes.Count; i++)
+            {
+                test.Themes[i].Thema = _context.Themes.FirstOrDefault(a => a.Id.Equals(test.Themes[i].ThemaId));
+                test.Themes[i].Thema.Questions = _context.Questions
+                    .Where(a => a.ThemaId.Equals(test.Themes[i].Thema.Id)).ToList();
             }
 
             var questions = CreateQuestionsStudent.TestToQuestions(test);
@@ -154,7 +133,9 @@ namespace TrainingTests.Controllers
         public async Task<ActionResult<List<TestView>>> GetAllTest()
         {
             // Change data without questions and answers
-            return Ok(await _context.Tests.Select(a => new TestView { Id = a.Id, Name = a.Name, Description = a.Description, Questions = a.Themes.Sum(q => q.CountQuest) }).ToListAsync());
+            return Ok(await _context.Tests.Select(a => new TestView 
+            { Id = a.Id, Name = a.Name, Description = a.Description, 
+                Questions = a.Themes.Sum(q => q.CountQuest) }).ToListAsync());
         }
 
         ///<summary>
@@ -233,9 +214,9 @@ namespace TrainingTests.Controllers
             TestStudent testStudent = new TestStudent();
 
             testStudent.Id = Guid.NewGuid().ToString();
-            testStudent.IpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            //testStudent.IpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
             testStudent.Test = test;
-            //testStudent.TestId = test.Id;
+            testStudent.TestId = idTest;
 
             List<QuestionAnswer> questionAnswers = new List<QuestionAnswer>();
             QuestionAnswer answer;
@@ -266,7 +247,6 @@ namespace TrainingTests.Controllers
             testStudent.Time = allTime;
             testStudent.QuestionAnswers = questionAnswers;
             testStudent = CreateQuestionsStudent.ResultTest(testStudent);
-            testStudent.IpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
             testStudent.DateFinish = DateTime.Now;
 
             return Ok(testStudent);

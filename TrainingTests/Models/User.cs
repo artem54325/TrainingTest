@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -39,7 +38,7 @@ namespace TrainingTests.Models
 
     public class User
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), JsonIgnore]
         public string Id { get; set; }
         [Required]
         public string Username { get; set; }
@@ -48,7 +47,7 @@ namespace TrainingTests.Models
         [Required, DataType(DataType.Password), JsonIgnore]
         public string Password { get; set; }
 
-        [DefaultValue(0)]
+
         public Roles Role { get; }
 
         public string Firstname { get; set; }
@@ -56,9 +55,10 @@ namespace TrainingTests.Models
 
         public DateTime DateBirth { get; set; }
 
-        //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime DateRegistration { get; set; }
     }
+
+
     public enum Roles
     {
         SuperUser, Teacher, Student, User

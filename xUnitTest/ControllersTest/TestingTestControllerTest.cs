@@ -1,146 +1,117 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using Moq;
-//using NSubstitute;
-//using System.Collections.Generic;
-//using System.Linq;
-//using TrainingTests.Controllers;
-//using TrainingTests.Models;
-//using TrainingTests.Repositories;
-//using TrainingTests.ViewModels;
-//using Xunit;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using Newtonsoft.Json.Linq;
+using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using TrainingTests;
+using TrainingTests.Controllers;
+using TrainingTests.Models;
+using TrainingTests.Repositories;
+using TrainingTests.ViewModels;
+using Xunit;
 
-//namespace xUnitTest.ControllersTest
-//{
-//    public class TestingTestControllerTest
-//    {
-//        private readonly MySqlContext mySql;
-//        private readonly TestingTestController controller;
+namespace xUnitTest.ControllersTest
+{
+    public class TestingTestControllerTest
+    {
+        private readonly TestServer _server;
+        private readonly HttpClient _client;
 
-//        public TestingTestControllerTest()
-//        {
-//            if (false)
-//            {
-//                PutData putData = new PutData();
+        public TestingTestControllerTest()
+        {
+            _server = new TestServer(new WebHostBuilder()
+                .UseStartup<Startup>());
+            _client = _server.CreateClient();
+        }
 
-//                var listQuestions = new List<Question>();//.AsQueryable();
-//                listQuestions.AddRange(putData.questions1);
-//                listQuestions.AddRange(putData.questions2);
+        [Fact]
+        public async void CheckTest()
+        {
+            var anotherAnswer = "Answer";
 
-//                var dbThema = new List<Thema>(putData.themes).AsQueryable();
-//                var dbTestThemes = new List<TestThema>(putData.TestThemas).AsQueryable();
-//                var dbQuestions = listQuestions.AsQueryable();
-//                var dbQuestionAnswer = new List<QuestionAnswer>(putData.questionAnswers).AsQueryable();
-//                var dbTestStudent = new List<TestStudent>(putData.testStudents).AsQueryable();
+            var getAll = await _client.GetAsync("/api/TestingTest/GetAllTest");
+            var tests = JArray.Parse(await getAll.Content.ReadAsStringAsync());
 
-//                var mockSetThema = new Mock<DbSet<Thema>>();
-//                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.Provider).Returns(dbThema.Provider);
-//                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.Expression).Returns(dbThema.Expression);
-//                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.ElementType).Returns(dbThema.ElementType);
-//                mockSetThema.As<IQueryable<Thema>>().Setup(a => a.GetEnumerator()).Returns(dbThema.GetEnumerator());
+            foreach(var test in tests)
+            {
+                var getTest = await _client.PostAsJsonAsync("/api/TestingTest/GetTest", (string)test["id"]);
+                var questions = JArray.Parse(await getTest.Content.ReadAsStringAsync());
+                bool st = false;
 
-//                var mockSetTestThema = new Mock<DbSet<TestThema>>();
-//                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.Provider).Returns(dbTestThemes.Provider);
-//                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.Expression).Returns(dbTestThemes.Expression);
-//                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.ElementType).Returns(dbTestThemes.ElementType);
-//                mockSetTestThema.As<IQueryable<TestThema>>().Setup(a => a.GetEnumerator()).Returns(dbTestThemes.GetEnumerator());
+                foreach(var question in questions)
+                {
+                    /**
+                     * {
+                        "id": "quest2",
+                        "themaId": "thema-1",
+                        "thema": null,
+                        "name": "Question 2",
+                        "description": "Текст ВОПРОСА 1",
+                        "answers": [
+                          "Ответ 1",
+                          "Ответ 2",
+                          "Ответ 3",
+                          "Ответ 4",
+                          "Ответ 5"
+                        ],
+                        "rightAnswers": null,
+                        "appraisal": 5.0,
+                        "countAnswers": 5,
+                        "time": 0,
+                        "allAnswers": false,
+                        "typeAnswer": 2
+                      }
+                     */
+                    var jA = new JArray();
+                    if (st)
+                    {
+                        jA.Add(anotherAnswer);
+                    }
+                    else
+                    {
+                        jA.Add("Ответ 1");
+                    }
+                    st = !st;
+                    question["rightAnswers"] = jA;
+                    question["time"] = 1500;
+                }
+                var getResultTest = await _client.PostAsJsonAsync("/api/TestingTest/Result", questions);
+                var result = JObject.Parse(await getResultTest.Content.ReadAsStringAsync());
+            }
 
-//                var mockSetQuestion = new Mock<DbSet<Question>>();
-//                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.Provider).Returns(dbQuestions.Provider);
-//                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.Expression).Returns(dbQuestions.Expression);
-//                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.ElementType).Returns(dbQuestions.ElementType);
-//                mockSetQuestion.As<IQueryable<Question>>().Setup(a => a.GetEnumerator()).Returns(dbQuestions.GetEnumerator());
+            //var testsView = Assert.IsType<ActionResult<List<TestView>>>(testsP);
+            //var testsVw = Assert.IsType<OkObjectResult>(testsView.Result);
+            //var tests = Assert.IsAssignableFrom<List<TestView>>(testsVw.Value);
+            //controller.Response = new Mock<HttpResponse>().Object;
+            //var q = controller.Response.Cookies;
+            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
 
-//                var mockSetQuestionAnswer = new Mock<DbSet<QuestionAnswer>>();
-//                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.Provider).Returns(dbQuestionAnswer.Provider);
-//                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.Expression).Returns(dbQuestionAnswer.Expression);
-//                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.ElementType).Returns(dbQuestionAnswer.ElementType);
-//                mockSetQuestionAnswer.As<IQueryable<QuestionAnswer>>().Setup(a => a.GetEnumerator()).Returns(dbQuestionAnswer.GetEnumerator());
+            //var cookies = new HttpCookieCollection();
+            //cookies.Add(new HttpCookie("usercookie"));
+            //controller.Response.Cookies.Returns(cookies);
 
-//                var mockSetTestStudent = new Mock<DbSet<TestStudent>>();
-//                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.Provider).Returns(dbTestStudent.Provider);
-//                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.Expression).Returns(dbTestStudent.Expression);
-//                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.ElementType).Returns(dbTestStudent.ElementType);
-//                mockSetTestStudent.As<IQueryable<TestStudent>>().Setup(a => a.GetEnumerator()).Returns(dbTestStudent.GetEnumerator());
+            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
+            //controller.Response.Cookies.Append("dateStart", new Mock<string>().Object);
 
-//                var mqContext = new Mock<MySqlContext>();
+         }
 
-//                mqContext.Setup(a => a.Questions).Returns(mockSetQuestion.Object);
-//                mqContext.Setup(a => a.Themes).Returns(mockSetThema.Object);
-//                mqContext.Setup(a => a.TestThemes).Returns(mockSetTestThema.Object);
-//                mqContext.Setup(a => a.QuestionAnswers).Returns(mockSetQuestionAnswer.Object);
-//                mqContext.Setup(a => a.TestStudents).Returns(mockSetTestStudent.Object);
+        [Fact]
+        public async void GetAllTests()
+        {
 
-//                mySql = mqContext.Object;
-//            }
-//            else
-//            {
-//                var optionsBuilder = new DbContextOptionsBuilder<MySqlContext>();
-//                var options = optionsBuilder
-//                    .UseNpgsql(xUnitTest.Helpers.Constants.DATABASE)
-//                    .Options;
-//                mySql = new MySqlContext(options);
-//                mySql.Database.EnsureDeleted();
-//                mySql.Database.EnsureCreated();
-//            }
-//            controller = new TestingTestController(mySql);
-//        }
+        }
 
-//        [Fact]
-//        public async void CheckTest()
-//        {
-//            var anotherAnswer = "Answer";
+        [Fact]
+        public void CheckTestPassword()
+        {
 
-//            var testsP = await controller.GetAllTest();
-//            var testsView = Assert.IsType<ActionResult<List<TestView>>>(testsP);
-//            var testsVw = Assert.IsType<OkObjectResult>(testsView.Result);
-//            var tests = Assert.IsAssignableFrom<List<TestView>>(testsVw.Value);
-//            //controller.Response = new Mock<HttpResponse>().Object;
-//            //var q = controller.Response.Cookies;
-//            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
-
-//            //var cookies = new HttpCookieCollection();
-//            //cookies.Add(new HttpCookie("usercookie"));
-//            //controller.Response.Cookies.Returns(cookies);
-
-//            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
-//            //controller.Response.Cookies.Append("dateStart", new Mock<string>().Object);
-
-//            Assert.Equal(2, tests.Count());
-//            foreach(var test in tests)
-//            {
-//                var questionsP = await controller.GetTest(test.Id);
-//                var questionsView = Assert.IsType<ActionResult<List<Question>>>(questionsP);
-//                var questionsVw = Assert.IsType<OkObjectResult>(questionsView.Result);
-//                var questions = Assert.IsAssignableFrom<List<Question>>(questionsVw.Value);
-//                bool status = false;
-
-//                foreach(var question in questions)
-//                {
-//                    if (status)
-//                    {
-
-//                    }
-//                    else
-//                    {
-
-//                    }
-//                    status = !status;
-//                }
-//            }
-//        }
-
-//        [Fact]
-//        public async void GetAllTests()
-//        {
-
-//        }
-
-//        [Fact]
-//        public void CheckTestPassword()
-//        {
-
-//        }
-//    }
-//}
+        }
+    }
+}

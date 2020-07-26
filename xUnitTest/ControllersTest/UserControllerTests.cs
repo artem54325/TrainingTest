@@ -1,25 +1,20 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using TrainingTests;
-using TrainingTests.Controllers;
 using TrainingTests.Models;
-using TrainingTests.Repositories;
+using TrainingTests.ViewModels;
 using Xunit;
 
 namespace xUnitTest.ControllersTest
 {
     public class UserControllerTests
-    {
-        private readonly MySqlContext mySql;
-        private readonly UsersController controller;
-
+    {// https://vk.com/dev/Like
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
@@ -41,7 +36,7 @@ namespace xUnitTest.ControllersTest
 
             var responseString = await response.Content.ReadAsStringAsync();
             var responseJson = JObject.Parse(responseString);
-            _client.DefaultRequestHeaders.Add("authorization", "Bearer "+responseJson["accessToken"]);
+            _client.DefaultRequestHeaders.Add("authorization", "Bearer " + responseJson["accessToken"]);
 
             var userResponse = await _client.GetAsync("/api/Users/User");
 
@@ -50,7 +45,8 @@ namespace xUnitTest.ControllersTest
             userObj.Id = "qwe";
             responseJson = JObject.Parse(responseString);
             /**
-             * 
+             *  httpPost.setHeader("Accept", "application/json");
+             *  httpPost.setHeader("Content-type", "application/json");
              * +responseJson	{{
                   "role": 0,
                   "id": "SuperUser",
@@ -69,8 +65,8 @@ namespace xUnitTest.ControllersTest
             responseJson["role"] = 1;
             responseJson["firstname"] = otherName;
             responseJson["secondname"] = otherName;
-            // Отправить через Form
 
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var userUserResponse = await _client.PostAsJsonAsync("/api/Users/Update", responseJson);
             var responseUserString = await userUserResponse.Content.ReadAsStringAsync();
             var responseUserJson = JObject.Parse(responseUserString);
@@ -80,23 +76,62 @@ namespace xUnitTest.ControllersTest
             Assert.Equal(responseJson["secondname"], responseUserJson["secondname"]);
             Assert.Equal(responseJson["username"], responseUserJson["username"]);
             Assert.Equal(responseJson["secondname"], responseUserJson["secondname"]);
-
-            // User.Identity.Name
-            //controller.User.Identity
-            // UserMy            
-            //var resultUser = await controller.UserMy();
-
-            //var viewResultu = Assert.IsType<ActionResult<UserView>>(resultUser);
-            //var userVu = Assert.IsType<OkObjectResult>(userVu.Result);
-            //var userResu = Assert.IsAssignableFrom<UserView>(userResu.Value);
         }
 
         [Fact]
-        public void SettingsTest()
+        public async void CreateNewUser()
         {
-            //My
-            //Update
+            string username = "user";
+            string email = "email@mail.ru";
+            string password = "Paswwrodsa2";
+            string firstname = "Paswwrodsa2";
+            string secondname = "Paswwrodsa2";
+            string group = "group";
+            string departament = "departament";
+            string discipline = "discipline";
+            DateTime dateBirth = DateTime.Now;
 
+            // Super
+            RegistrationView registration = new RegistrationView
+            {
+                Username = username + "super",
+                Email = email,
+                Password = password,
+                Firstname = firstname,
+                Secondname = secondname,
+                Group = group,
+                Department = departament,
+                Discipline = discipline,
+                DateBirth = dateBirth
+            };
+            registration.Role = "super";
+
+            var responseSuper = await _client.PostAsJsonAsync("/api/Users/Registration", registration);
+            var responseJsonSuper = JObject.Parse(await responseSuper.Content.ReadAsStringAsync());
+
+            Assert.Equal(email, (string)responseJsonSuper["email"]);
+            Assert.Equal(firstname, (string)responseJsonSuper["firstname"]);
+            Assert.Equal(secondname, (string)responseJsonSuper["secondname"]);
+
+            //Student
+            registration.Role = "student";
+
+            var responseStudent = await _client.PostAsJsonAsync("/api/Users/Registration", registration);
+            var responseJsonStudent = JObject.Parse(await responseStudent.Content.ReadAsStringAsync());
+
+            Assert.Equal(email, (string)responseJsonStudent["email"]);
+            Assert.Equal(firstname, (string)responseJsonStudent["firstname"]);
+            Assert.Equal(secondname, (string)responseJsonStudent["secondname"]);
+
+            //Update
+            registration.Role = "teacher";
+
+            var responseTeacher = await _client.PostAsJsonAsync("/api/Users/Registration", registration);
+            var responseJsonTeacher = JObject.Parse(await responseTeacher.Content.ReadAsStringAsync());
+
+            Assert.Equal(email, (string)responseJsonTeacher["email"]);
+            Assert.Equal(firstname, (string)responseJsonTeacher["firstname"]);
+            Assert.Equal(secondname, (string)responseJsonTeacher["secondname"]);
         }
     }
 }

@@ -29,35 +29,6 @@ namespace TrainingTests.Controllers
         public UsersController(MySqlContext mySql)
         {
             _context = mySql;
-            if (_context.Questions.Count() == 0)
-            {
-                PutData data = new PutData();
-
-                Console.WriteLine($"Add database Article = {data.articles.Count}");
-                _context.Articles.AddRange(data.articles);
-                _context.Comments.AddRange(data.comments);
-
-                _context.SuperUsers.Add(data.super);
-                _context.TestThemes.AddRange(data.TestThemas);
-                _context.TeacherUsers.AddRange(data.teacher);
-                _context.StudentUsers.AddRange(data.studentUser);
-                _context.TestStudents.AddRange(data.testStudents);
-                _context.QuestionAnswers.AddRange(data.questionAnswers);
-                _context.Tests.AddRange(data.tests);
-
-                _context.Themes.AddRange(data.themes);
-                _context.Questions.AddRange(data.questions1);
-                _context.Questions.AddRange(data.questions2);
-                _context.Questions.AddRange(data.questions3);
-                _context.Marks.AddRange(data.Marks1);
-                _context.Marks.AddRange(data.Marks2);
-
-                _context.EventProfileUsers.AddRange(data.EventProfileUsers);
-                _context.Meetups.AddRange(data.Meetups);
-                _context.Speakers.AddRange(data.Speakers);
-
-                _context.SaveChanges();
-            }
         }
 
 
@@ -73,7 +44,7 @@ namespace TrainingTests.Controllers
         /// <response code="403">Bad username or password</response>  
         [AllowAnonymous]
         [HttpPost("Authorization")]
-        public async Task<ActionResult<UserView>> Authorization(string username = "SuperUser", string password = "SuperUser")
+        public async Task<ActionResult<UserView>> Authorization([FromBody] string username = "SuperUser", [FromBody] string password = "SuperUser")
         {
             var identity = GetIdentity(username, password);
             if (identity == null)
@@ -139,21 +110,126 @@ namespace TrainingTests.Controllers
         /// <response code="403">Don't auth</response>
         [Authorize]
         [HttpPost("Update")]
-        public ActionResult<User> Update(User user)
+        public async Task<ActionResult<User>> Update([FromBody] User user)
         {
             string usermane = User.Identity.Name;
-            user = GetUser(usermane);
-            if (user.Username.Equals(usermane))
-            {
-                return StatusCode(403);
-            }
+            User userOld = GetUser(usermane);
             if (user == null)
             {
                 return StatusCode(400);
             }
 
-            return Ok(user);
+            if (userOld.Role == Roles.Student)
+            {
+                StudentUser student = await _context.StudentUsers.FirstOrDefaultAsync(a=>a.Id.Equals(userOld.Id));
+
+                student.Firstname = user.Firstname;
+                student.Secondname = user.Secondname;
+                student.Email = user.Email;
+                student.DateBirth = user.DateBirth;
+
+                _context.StudentUsers.Update(student);
+            }
+            if (userOld.Role == Roles.SuperUser)
+            {
+                SuperUser super = _context.SuperUsers.FirstOrDefault(a => a.Id.Equals(userOld.Id));
+
+                super.Firstname = user.Firstname;
+                super.Secondname = user.Secondname;
+                super.Email = user.Email;
+                super.DateBirth = user.DateBirth;
+
+                _context.SuperUsers.Update(super);
+            }
+            if (userOld.Role == Roles.Teacher)
+            {
+                TeacherUser teacher = _context.TeacherUsers.FirstOrDefault(a => a.Id.Equals(userOld.Id));
+
+                teacher.Firstname = user.Firstname;
+                teacher.Secondname = user.Secondname;
+                teacher.Email = user.Email;
+                teacher.DateBirth = user.DateBirth;
+
+                _context.TeacherUsers.Update(teacher);
+            }
+
+            _context.SaveChanges();
+            return Ok(userOld);
         }
+
+        ///<summary>
+        /// Registration new user
+        ///</summary>
+        /// <remarks>
+        /// Sample request:
+        ///     POST /User
+        /// </remarks>
+        /// <returns>Get user</returns>
+        /// <response code="200">Return new user</response>
+        /// <response code="403">if there is such a username</response>
+        [HttpPost("Registration")]
+        public async Task<ActionResult<UserView>> Registration([FromBody] RegistrationView registration)
+        {
+            // Check username
+            var sameUser = GetUser(registration.Username);
+            if (sameUser != null || registration.Role == null || registration.Role.Equals(""))
+            {
+                return StatusCode(403);
+            }
+
+            switch (registration.Role)
+            {
+                case "super":
+                    SuperUser user = new SuperUser
+                    {
+                        Username = registration.Username,
+                        Email = registration.Email,
+                        Firstname = registration.Firstname,
+                        Secondname = registration.Secondname,
+                        Password = registration.Password,
+                        DateBirth = registration.DateBirth,
+                        DateRegistration = DateTime.Now
+                    };
+                    await _context.SuperUsers.AddAsync(user);
+                    break;
+
+                case "teacher":
+                    TeacherUser teacher = new TeacherUser
+                    {
+                        Username = registration.Username,
+                        Email = registration.Email,
+                        Firstname = registration.Firstname,
+                        Secondname = registration.Secondname,
+                        DateBirth = registration.DateBirth,
+                        DateRegistration = DateTime.Now,
+                        Password = registration.Password,
+                        Discipline = registration.Discipline,
+                        Department = registration.Department
+                    };
+                    await _context.TeacherUsers.AddAsync(teacher);
+                    break;
+
+                case "student":
+                    StudentUser student = new StudentUser
+                    {
+                        Username = registration.Username,
+                        Email = registration.Email,
+                        Firstname = registration.Firstname,
+                        Secondname = registration.Secondname,
+                        Password = registration.Password,
+                        DateBirth = registration.DateBirth,
+                        DateRegistration = DateTime.Now
+                    };
+                    await _context.StudentUsers.AddAsync(student);
+                    break;
+            }
+            await _context.SaveChangesAsync();
+
+            var newUser = GetUser(registration.Username);
+
+            return Ok(newUser);
+        }
+
         private ClaimsIdentity GetIdentity(string username, string password)
         {
             User user = _context.TeacherUsers.FirstOrDefault(a => a.Username.Equals(username) && a.Password.Equals(password));
