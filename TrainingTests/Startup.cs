@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,8 +36,8 @@ namespace TrainingTests
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddControllers();
-            services.AddDbContext<MySqlContext>(options => 
-                options.UseNpgsql("Host=192.168.1.202;Port=5433;Database=asg;Username=asgwebapi;Password=admin"));
+            services.AddDbContext<MySqlContext>(options => // 192.168.1.202
+                options.UseNpgsql("Host=192.168.0.151;Port=5433;Database=asg;Username=asgwebapi;Password=admin"));
             //services.AddDbContext<MySqlContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Database=asg;Username=asgwebapi;Password=admin"));
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -87,6 +88,32 @@ namespace TrainingTests
                     ValidateIssuerSigningKey = true,
                 };
             });
+
+            services.AddMemoryCache();
+
+            //#region settings session
+            //services.Configure<CookiePolicyOptions>(options =>
+            //{
+            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            //    options.CheckConsentNeeded = context => true;
+            //    options.MinimumSameSitePolicy = SameSiteMode.None;
+            //});
+
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.User.RequireUniqueEmail = true;
+            //    options.Password.RequireNonAlphanumeric = false;
+
+            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+            //    options.Lockout.MaxFailedAccessAttempts = 3;
+            //    options.Lockout.AllowedForNewUsers = true;
+            //});
+            //services.AddMemoryCache();
+            //services.AddSession(options =>
+            //{
+            //    options.Cookie.IsEssential = true;
+            //});
+            //#endregion
 
             services.AddSwaggerGen(c =>
             {
@@ -144,6 +171,8 @@ namespace TrainingTests
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            //app.UseSession();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

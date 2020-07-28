@@ -9,7 +9,9 @@ using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using TrainingTests;
 using TrainingTests.Controllers;
 using TrainingTests.Models;
@@ -30,6 +32,8 @@ namespace xUnitTest.ControllersTest
                 .UseStartup<Startup>());
             _client = _server.CreateClient();
         }
+        // https://stackru.com/questions/39263149/nastrojka-fajlov-cookie-dlya-httpclient-aspnet-core-testserver
+        // C# TestServer get and set cookie
 
         [Fact]
         public async void CheckTest()
@@ -43,6 +47,7 @@ namespace xUnitTest.ControllersTest
             {
                 var getTest = await _client.PostAsJsonAsync("/api/TestingTest/GetTest", (string)test["id"]);
                 var questions = JArray.Parse(await getTest.Content.ReadAsStringAsync());
+
                 bool st = false;
 
                 foreach(var question in questions)
@@ -84,6 +89,9 @@ namespace xUnitTest.ControllersTest
                 }
                 var getResultTest = await _client.PostAsJsonAsync("/api/TestingTest/Result", questions);
                 var result = JObject.Parse(await getResultTest.Content.ReadAsStringAsync());
+
+                Assert.NotNull(result.Value<string>("testId"));
+                Assert.NotEmpty(result.Value<string>("testId"));
             }
 
             //var testsView = Assert.IsType<ActionResult<List<TestView>>>(testsP);
