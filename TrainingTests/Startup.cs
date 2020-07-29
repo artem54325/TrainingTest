@@ -171,6 +171,8 @@ namespace TrainingTests
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             //app.UseSession();
 
@@ -182,8 +184,6 @@ namespace TrainingTests
 
             app.UseCors(builder => builder.AllowAnyOrigin());
 
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -115,6 +116,9 @@ namespace TrainingTests.Controllers
             Response.Cookies.Append("test", test.Id);
             Response.Cookies.Append("dateStart", DateTime.Now.Ticks.ToString());
 
+            Response.Headers.Add("test", test.Id);
+            Response.Headers.Add("dateStart", DateTime.Now.Ticks.ToString());
+
             return Ok(questions);
         }
 
@@ -149,8 +153,8 @@ namespace TrainingTests.Controllers
         /// <response code="200">Returns list articles</response>
         /// <response code="400">If doesn't test Id or doesn't it test</response>
         [HttpPost("WriteUser")]
-        public ActionResult<List<Question>> UserMy([FromForm] string fullname,
-            string group, string departament)
+        public ActionResult<List<Question>> UserMy([FromBody] string fullname,
+            [FromBody] string group, [FromBody] string departament)
         {
             Test test = null;
             //var testId = Request.Cookies["test"];
@@ -208,6 +212,17 @@ namespace TrainingTests.Controllers
             }
 
             string idTest = Request.Cookies["test"];
+            var startDate = Request.Cookies["dateStart"];
+
+            if (idTest == null)
+            {
+                idTest = Request.Headers["test"];
+            }
+            if (startDate == null)
+            {
+                startDate = Request.Headers["dateStart"];
+            }
+
             Console.WriteLine($"test id = {idTest}");
             Test test = _context.Tests.FirstOrDefault(a => a.Id.Equals(idTest));
 
@@ -248,6 +263,7 @@ namespace TrainingTests.Controllers
             testStudent.QuestionAnswers = questionAnswers;
             testStudent = CreateQuestionsStudent.ResultTest(testStudent);
             testStudent.DateFinish = DateTime.Now;
+            testStudent.DateStart = new DateTime(long.Parse(startDate));
 
             return Ok(testStudent);
         }

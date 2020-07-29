@@ -87,34 +87,24 @@ namespace xUnitTest.ControllersTest
                     question["rightAnswers"] = jA;
                     question["time"] = 1500;
                 }
+
+                var headerTest = getTest.Headers.FirstOrDefault(a => a.Key.Equals("test")).Value.First();
+                var headerStart = getTest.Headers.FirstOrDefault(a => a.Key.Equals("dateStart")).Value.First();
+
+                // Remove
+                _client.DefaultRequestHeaders.Remove("test");
+                _client.DefaultRequestHeaders.Remove("dateStart");
+
+                _client.DefaultRequestHeaders.Add("test", headerTest);
+                _client.DefaultRequestHeaders.Add("dateStart", headerStart);
+
                 var getResultTest = await _client.PostAsJsonAsync("/api/TestingTest/Result", questions);
                 var result = JObject.Parse(await getResultTest.Content.ReadAsStringAsync());
 
                 Assert.NotNull(result.Value<string>("testId"));
                 Assert.NotEmpty(result.Value<string>("testId"));
             }
-
-            //var testsView = Assert.IsType<ActionResult<List<TestView>>>(testsP);
-            //var testsVw = Assert.IsType<OkObjectResult>(testsView.Result);
-            //var tests = Assert.IsAssignableFrom<List<TestView>>(testsVw.Value);
-            //controller.Response = new Mock<HttpResponse>().Object;
-            //var q = controller.Response.Cookies;
-            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
-
-            //var cookies = new HttpCookieCollection();
-            //cookies.Add(new HttpCookie("usercookie"));
-            //controller.Response.Cookies.Returns(cookies);
-
-            //controller.Response.Cookies.Append("test", new Mock<string>().Object);
-            //controller.Response.Cookies.Append("dateStart", new Mock<string>().Object);
-
          }
-
-        [Fact]
-        public async void GetAllTests()
-        {
-
-        }
 
         [Fact]
         public void CheckTestPassword()
