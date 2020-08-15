@@ -37,7 +37,7 @@ namespace TrainingTests
         {
             //services.AddControllers();
             services.AddDbContext<MySqlContext>(options => // 192.168.1.202
-                options.UseNpgsql("Host=192.168.0.151;Port=5433;Database=asg;Username=asgwebapi;Password=admin"));
+                options.UseNpgsql("Host=192.168.1.45;Port=5433;Database=asg;Username=asgwebapi;Password=admin"));
             //services.AddDbContext<MySqlContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Database=asg;Username=asgwebapi;Password=admin"));
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

@@ -9,7 +9,7 @@ namespace TrainingTests.Repositories
     {
         public MySqlContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
 
             if (Articles.Count() == 0)
