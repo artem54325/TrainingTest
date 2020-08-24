@@ -11,7 +11,7 @@
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="TrainingTests" expanded="True">
-            <Node name="TrainingTests" expanded="True">
+            <Node name="TrainingTests" expanded="True" selected="True">
               <Node name="Controllers" expanded="True" />
               <Node name="Helpers" expanded="True" />
               <Node name="Models" expanded="True" />
@@ -19,9 +19,7 @@
               <Node name="Repositories" expanded="True" />
             </Node>
             <Node name="xUnitTest" expanded="True">
-              <Node name="ControllersTest" expanded="True">
-                <Node name="ArticlesControllerTests.cs" selected="True" />
-              </Node>
+              <Node name="ControllersTest" expanded="True" />
               <Node name="Helpers" expanded="True" />
             </Node>
           </Node>
